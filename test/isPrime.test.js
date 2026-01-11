@@ -33,6 +33,25 @@ describe("isPrime", ()=>{
     test("has correct type for result", ()=>{
         expect(isPrime(5)).toBeTypeOf("boolean");
         expect(typeof isPrime(4)).toBe("boolean");
+    })
+
+    test("treats 0 and 1 as non-prime", ()=>{
+        expect(isPrime(0)).toBeFalsy();
+        expect(isPrime(1)).toBe(false);
+    })
+
+    test("returns for all even number which is > 2", ()=>{
+        expect(isPrime(6)).toBeFalsy();
+        expect(isPrime(10)).toBeFalsy();
 
     })
+
+    test("returns false for perfect squares", ()=>{
+        expect(isPrime(81)).toBeFalsy();
+    })
+
+    test("testing against a non-integer", ()=>{
+        expect(isPrime(2.5)).toBe(false);
+    })
+
 })
