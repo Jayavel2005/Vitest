@@ -1,6 +1,6 @@
 export const shippingCost = (weight, coupon = "") =>{
-    if (!typeof weight === "number") throw new Error("Weight must be a number");
-    if (!typeof coupon === "string") throw new Error("Coupen must be a string.");
+    if (typeof weight !== "number") throw new Error("Weight must be a number");
+    if (typeof coupon !== "string") throw new Error("Coupon must be a string.");
 
     if (weight <= 0) throw new Error("Weight must be greater than 0.");
 
