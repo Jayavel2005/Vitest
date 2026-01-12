@@ -1,5 +1,5 @@
 import {shippingCost} from "../src/shippingCost.js";
-import {describe, test, expect} from "vitest";
+import {describe, test, expect, it} from "vitest";
 
 
 describe("shippingCost.js", ()=>{
@@ -8,20 +8,24 @@ describe("shippingCost.js", ()=>{
         expect(typeof shippingCost((2))).toBe("number");
     })
 
-    test("it charges prices for interior weights", ()=>{
-        expect(shippingCost(0.5)).toBe(3.99);
-        expect(shippingCost(4)).toBe(5.99);
-        expect(shippingCost(10)).toBe(8.99)
-        expect(shippingCost(30)).toBe(14.99);
+    it.each([
+        {weight : 0.5, expected : 3.99},
+        {weight : 4, expected : 5.99},
+        {weight : 10, expected :8.99 },
+        {weight : 30, expected : 14.99}
+        ])("charges $expected for weights $weight", ({weight, expected})=> {
+        expect(shippingCost(weight)).toBe(expected);
     });
 
     // boundary test
 
-    test("it charges prices for edge weights", ()=>{
-        expect(shippingCost(1)).toBe(3.99);
-        expect(shippingCost(5)).toBe(5.99);
-        expect(shippingCost(20)).toBe(8.99);
-        expect(shippingCost(21)).toBe(14.99);
+    test.each([
+        {weight : 1, expected : 3.99},
+        {weight : 5, expected: 5.99},
+        {weight: 20, expected: 8.99},
+        {weight: 21, expected: 14.99}
+    ])("checks for boundary weight $weight => $expected", ({weight, expected})=>{
+        expect(shippingCost(weight)).toBe(expected);
     })
 
     test("applies freeshipping coupon exactly", ()=>{
@@ -29,16 +33,20 @@ describe("shippingCost.js", ()=>{
         expect(shippingCost(259, 'freeshipping')).toBe(0);
     })
 
-    test("ignores non-matching coupons", ()=>{
-        expect(shippingCost(1, "FREESHIPPING")).toBe(3.99);
-        expect(shippingCost(3, "NOTHING")).toBe(5.99);
-        expect(shippingCost(5.99)).toBe(8.99);
+    test.each([
+        {weight : 1,coupon : "FREESHIPPING" ,expected : 3.99},
+        {weight: 3, coupon: "NOTHING", expected: 5.99},
+        {weight: 5.99, coupon: "", expected: 8.99}
+    ])("ignores non-matching coupons such as $coupon", ({weight, coupon, expected})=>{
+        expect(shippingCost(weight, coupon)).toBe(expected);
     })
 
-    test("throws an error for invalid weights", ()=>{
-        expect(()=>shippingCost(0)).toThrow();
-        expect(()=> shippingCost('3')).toThrow();
-        expect(()=> shippingCost("10")).toThrow("Weight must be a number");
+    test.each([
+        {weight : 0, error : "Weight must be greater than 0."},
+        {weight : '6', error : "Weight must be a number"},
+        {weight : "111", error : "Weight must be a number"}
+    ])("throws an error for invalid weight $weight", ({weight, error})=>{
+        expect(() => shippingCost(weight)).toThrow(error);
     })
 
     test("throws an error for invalid coupons", ()=>{
