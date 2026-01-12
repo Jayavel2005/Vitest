@@ -59,7 +59,7 @@ describe("shippingCost.js", ()=>{
         {weight: 1, coupon: null},
         {weight: 12, coupon: true}
     ])
-    ("throws an error for invalid coupons $coupon", ({weight, coupon})=>{
+    ("throws an error for invalid coupons $coupon\n", ({weight, coupon})=>{
         expect(() => shippingCost(weight, coupon)).toThrow("Coupon must be a string.");
     })
 })
