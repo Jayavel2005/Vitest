@@ -28,9 +28,13 @@ describe("shippingCost.js", ()=>{
         expect(shippingCost(weight)).toBe(expected);
     })
 
-    test("applies freeshipping coupon exactly", ()=>{
-        expect(shippingCost(2, 'freeshipping')).toBe(0);
-        expect(shippingCost(259, 'freeshipping')).toBe(0);
+    test.each([
+        {weight : 2, coupon : "freeshipping", expected : 0},
+        {weight : 10, coupon: "freeshipping" , expected: 0},
+        {weight : 12, coupon: "freeshipping", expected: 0},
+    ])
+    ("applies \'freeshipping'\ coupon exactly for weight weight $weight", ({weight, coupon, expected})=>{
+        expect(shippingCost(weight,coupon)).toBe(expected)
     })
 
     test.each([
@@ -49,9 +53,13 @@ describe("shippingCost.js", ()=>{
         expect(() => shippingCost(weight)).toThrow(error);
     })
 
-    test("throws an error for invalid coupons", ()=>{
-        expect(()=>shippingCost(3,4)).toThrow();
-        expect(()=> shippingCost(10,45)).toThrow()
-        expect(()=> shippingCost(3, null)).toThrow();
+    test.each([
+        {weight: 2, coupon : 2},
+        {weight: 10, coupon: 12 },
+        {weight: 1, coupon: null},
+        {weight: 12, coupon: true}
+    ])
+    ("throws an error for invalid coupons $coupon", ({weight, coupon})=>{
+        expect(() => shippingCost(weight, coupon)).toThrow("Coupon must be a string.");
     })
 })
